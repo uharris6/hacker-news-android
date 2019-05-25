@@ -6,6 +6,6 @@ object NewsConstants {
 
     const val COLUMN_ID = "id"
 
-    const val QUERY_NEWS = "SELECT * FROM $TABLE_NAME"
+    const val QUERY_NEWS = "SELECT * FROM $TABLE_NAME ORDER BY createdAt DESC"
 
 }

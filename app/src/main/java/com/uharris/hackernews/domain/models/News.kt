@@ -9,4 +9,5 @@ data class News(
     @SerializedName("story_title") val storyTitle: String = "",
     @SerializedName("story_url") val storyUrl: String = "",
     @SerializedName("created_at") val createdAt: String = "",
-    val author: String = "")
+    val author: String = "",
+    val deleted: Int = 0)

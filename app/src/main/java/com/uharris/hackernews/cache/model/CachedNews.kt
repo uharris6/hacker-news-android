@@ -9,7 +9,7 @@ import com.uharris.hackernews.cache.db.NewsConstants
 class CachedNews(
     @PrimaryKey
     @ColumnInfo(name = NewsConstants.COLUMN_ID)
-    var id: Int,
+    var id: Long,
     var title: String? = "",
     var storyTitle: String? = "",
     var storyUrl: String? = "",

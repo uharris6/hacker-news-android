@@ -7,10 +7,10 @@ import androidx.room.RoomDatabase
 import com.uharris.hackernews.cache.dao.CachedNewsDao
 import com.uharris.hackernews.cache.model.CachedNews
 
-@Database(entities = arrayOf(CachedNews::class), version = 1)
+@Database(entities = [CachedNews::class], version = 1)
 abstract class Database : RoomDatabase() {
 
-    abstract fun cachedNewsDao(): CachedNewsDao
+    abstract val cachedNewsDao: CachedNewsDao
 
     companion object {
 

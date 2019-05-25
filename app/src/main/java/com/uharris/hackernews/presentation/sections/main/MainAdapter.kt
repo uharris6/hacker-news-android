@@ -19,10 +19,19 @@ class MainAdapter(private var news: MutableList<News>, private val listener: (Ne
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(news[position], listener)
 
+    fun getItem(position: Int): News = news[position]
+
     fun setItems(newsList: List<News>) {
         news.clear()
         news.addAll(newsList)
         notifyDataSetChanged()
+    }
+
+    fun removeItemAt(position: Int, notifyChange: Boolean = true) {
+        news.removeAt(position)
+
+        if (notifyChange)
+            notifyItemRemoved(position)
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

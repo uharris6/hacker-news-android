@@ -10,9 +10,8 @@ import com.uharris.hackernews.cache.model.CachedNews
 @Dao
 abstract class CachedNewsDao {
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertNews(user: CachedNews)
+    abstract suspend fun insertNews(vararg news: CachedNews)
 
     @Query(NewsConstants.QUERY_NEWS)
     @JvmSuppressWildcards

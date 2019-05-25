@@ -1,12 +1,18 @@
 package com.uharris.hackernews.presentation.sections.main
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uharris.hackernews.R
 import com.uharris.hackernews.domain.models.News
 import com.uharris.hackernews.presentation.base.BaseActivity
+import com.uharris.hackernews.presentation.base.SwipeToDeleteCallback
 import com.uharris.hackernews.presentation.base.ViewModelFactory
 import com.uharris.hackernews.presentation.sections.web.WebActivity
 import com.uharris.hackernews.presentation.state.Resource
@@ -39,7 +45,7 @@ class MainActivity : BaseActivity() {
 
         setupUI()
 
-        mainViewModel.fetchNews()
+        mainViewModel.fetchLocalNews()
 
         swipeContainer.setOnRefreshListener {
             mainViewModel.fetchNews()
@@ -49,20 +55,32 @@ class MainActivity : BaseActivity() {
     private fun setupUI() {
         newsRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = MainAdapter(mutableListOf()) { news ->
-            val url = if(news.url.isNullOrEmpty()) news.storyUrl else news.url
+            val url = if (news.url.isNullOrEmpty()) news.storyUrl else news.url
             WebActivity.startActivity(this, url)
         }
         newsRecyclerView.adapter = adapter
+        val icon = ContextCompat.getDrawable(this,
+            R.drawable.baseline_delete_24)
+        icon?.setTint(ContextCompat.getColor(this, android.R.color.white))
+        val background = ColorDrawable(Color.RED)
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(icon, background){
+            mainViewModel.deleteNews(adapter.getItem(it).id)
+            adapter.removeItemAt(it, true)
+        })
+        itemTouchHelper.attachToRecyclerView(newsRecyclerView)
     }
 
     private fun handleDataState(resource: Resource<List<News>>) {
         when (resource.status) {
             ResourceState.SUCCESS -> {
                 resource.data?.let {
-                    if(swipeContainer.isRefreshing){
-                        swipeContainer.isRefreshing = false
+                    if(it.isNotEmpty()){
+                        if(swipeContainer.isRefreshing){
+                            swipeContainer.isRefreshing = false
+                        }
+                        val filterNews = it.filter { news -> news.deleted == 0 }
+                        adapter.setItems(filterNews)
                     }
-                    adapter.setItems(it)
                 }
             }
             ResourceState.LOADING -> {

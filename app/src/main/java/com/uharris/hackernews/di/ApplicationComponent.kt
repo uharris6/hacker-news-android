@@ -1,10 +1,7 @@
 package com.uharris.hackernews.di
 
 import android.app.Application
-import com.uharris.hackernews.di.modules.ApplicationModule
-import com.uharris.hackernews.di.modules.DataModule
-import com.uharris.hackernews.di.modules.PresentationModule
-import com.uharris.hackernews.di.modules.UIModule
+import com.uharris.hackernews.di.modules.*
 import com.uharris.hackernews.presentation.base.HackerNewsApplication
 import dagger.BindsInstance
 import dagger.Component
@@ -15,6 +12,7 @@ import javax.inject.Singleton
 @Component(
     modules = [AndroidInjectionModule::class,
         UIModule::class,
+        CacheModule::class,
         DataModule::class,
         PresentationModule::class,
         ApplicationModule::class])
