@@ -46,18 +46,33 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteNews(id: Long) {
+        var currentNews = newsLiveData.value?.data?.toMutableList() ?: mutableListOf()
+        var oldNews = News()
+        var position = 0
+        for(news in currentNews){
+            if(news.id == id){
+                oldNews = news
+                break
+            }
+            position++
+        }
         newsLiveData.postValue(Resource(ResourceState.LOADING, null, null))
         deleteNews(DeleteNews.Params(id)){
             when(it){
-                is Completable.OnComplete -> newsLiveData.postValue(Resource(ResourceState.SUCCESS, mutableListOf(), null))
+                is Completable.OnComplete -> {
+                    currentNews[position] = News(oldNews.id, oldNews.title, oldNews.url, oldNews.storyTitle,
+                        oldNews.storyUrl, oldNews.createdAt, oldNews.author, 1)
+                    newsLiveData.postValue(Resource(ResourceState.SUCCESS, currentNews, null))
+                }
                 is Completable.OnError -> newsLiveData.postValue(Resource(ResourceState.ERROR, null, it.throwable.localizedMessage))
             }
         }
     }
 
+
+
     private fun handleLocalNews(localNews: List<News>) {
         if(localNews.isNotEmpty()) {
-
             newsLiveData.postValue(Resource(ResourceState.SUCCESS, localNews, null))
         }else{
             fetchNews(UseCase.None()){
