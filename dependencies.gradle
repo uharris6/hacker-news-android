@@ -26,6 +26,7 @@ ext {
     mockitoAndroidVersion = '2.8.9'
     androidSupportRunnerVersion = '1.1.0'
     androidSupportRulesVersion = '1.1.0'
+    robolectricVersion = '3.4.2'
 
     androidDependencies = [
             kotlin           : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
@@ -79,6 +80,8 @@ ext {
             espressoIntents:    "androidx.test.espresso:espresso-intents:${espressoVersion}",
             espressoContrib:    "androidx.test.espresso:espresso-contrib:${espressoVersion}",
             retrofit:           "com.squareup.retrofit2:retrofit-mock:${retrofitVersion}",
-            archTesting:        "androidx.arch.core:core-testing:2.0.0-rc01"
+            archTesting:        "androidx.arch.core:core-testing:2.0.0-rc01",
+            junit4:             "androidx.test.ext:junit:1.1.0",
+            roboelectric:       "org.robolectric:robolectric:${robolectricVersion}"
     ]
 }

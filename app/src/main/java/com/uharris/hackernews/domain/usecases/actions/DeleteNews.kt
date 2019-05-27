@@ -7,15 +7,7 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class DeleteNews @Inject constructor(private val cache: Cache): LocalUseCase<Completable, DeleteNews.Params>(){
-    override suspend fun run(params: Params): Completable {
-        return try{
-            cache.deleteNews(params.id)
-            Completable.OnComplete
-        }catch (e: Exception){
-            Completable.OnError(e)
-        }
-    }
-
+    override suspend fun run(params: Params): Completable = cache.deleteNews(params.id)
 
     data class Params(val id: Long)
 }

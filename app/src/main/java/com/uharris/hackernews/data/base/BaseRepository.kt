@@ -11,7 +11,7 @@ open class BaseRepository {
             val response = call.await()
             when (response.isSuccessful) {
                 true -> Result.Success(response.body() ?: default)
-                false -> Result.Success(default)
+                false -> Result.Error(Failure.ServerError)
             }
         } catch (exception: Throwable) {
             Result.Error(Failure.ServerError)

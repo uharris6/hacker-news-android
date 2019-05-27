@@ -10,6 +10,7 @@ object Mapper {
             title = cachedNews.title ?: "",
             storyTitle = cachedNews.storyTitle ?: "",
             storyUrl = cachedNews.storyUrl ?: "",
+            url = cachedNews.url ?: "",
             author = cachedNews.author,
             createdAt = cachedNews.createdAt,
             deleted = cachedNews.deleted)
@@ -19,6 +20,7 @@ object Mapper {
         return CachedNews(
             id = news.id,
             title =  news.title,
+            url = news.url,
             storyTitle = news.storyTitle,
             storyUrl = news.storyUrl,
             author = news.author,

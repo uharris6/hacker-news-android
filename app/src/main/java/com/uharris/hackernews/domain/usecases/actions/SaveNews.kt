@@ -8,14 +8,8 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class SaveNews @Inject constructor(private val cache: Cache): LocalUseCase<Completable, SaveNews.Params>(){
-    override suspend fun run(params: Params): Completable {
-        return try{
-            cache.saveNews(params.news)
-            Completable.OnComplete
-        }catch (e: Exception){
-            Completable.OnError(e)
-        }
-    }
+    override suspend fun run(params: Params): Completable = cache.saveNews(params.news)
+
 
 
     data class Params(val news: List<News>)
