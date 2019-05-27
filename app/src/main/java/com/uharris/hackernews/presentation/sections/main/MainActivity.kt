@@ -55,8 +55,17 @@ class MainActivity : BaseActivity() {
     private fun setupUI() {
         newsRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = MainAdapter(mutableListOf()) { news ->
-            val url = if (news.url.isNullOrEmpty()) news.storyUrl else news.url
-            WebActivity.startActivity(this, url)
+           var url = when{
+               news.url.isNotEmpty() -> news.url
+               news.storyUrl.isNotEmpty() -> news.storyUrl
+               else -> ""
+            }
+
+            if(url.isEmpty()){
+                showMessage("This article does not have url to show.")
+            } else{
+                WebActivity.startActivity(this, url)
+            }
         }
         newsRecyclerView.adapter = adapter
         val icon = ContextCompat.getDrawable(this,
@@ -71,13 +80,13 @@ class MainActivity : BaseActivity() {
     }
 
     private fun handleDataState(resource: Resource<List<News>>) {
+        if(swipeContainer.isRefreshing){
+            swipeContainer.isRefreshing = false
+        }
         when (resource.status) {
             ResourceState.SUCCESS -> {
                 resource.data?.let {
                     if(it.isNotEmpty()){
-                        if(swipeContainer.isRefreshing){
-                            swipeContainer.isRefreshing = false
-                        }
                         val filterNews = it.filter { news -> news.deleted == 0 }
                         adapter.setItems(filterNews)
                     }

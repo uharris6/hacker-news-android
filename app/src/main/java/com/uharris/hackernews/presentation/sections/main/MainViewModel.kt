@@ -42,20 +42,12 @@ class MainViewModel @Inject constructor(
         fetchLocalNews(LocalUseCase.None()) {
             handleLocalNews(it)
         }
-
     }
 
     fun deleteNews(id: Long) {
         var currentNews = newsLiveData.value?.data?.toMutableList() ?: mutableListOf()
-        var oldNews = News()
-        var position = 0
-        for(news in currentNews){
-            if(news.id == id){
-                oldNews = news
-                break
-            }
-            position++
-        }
+        var position = getCurrentPosition(id, currentNews)
+        var oldNews = currentNews[position]
         newsLiveData.postValue(Resource(ResourceState.LOADING, null, null))
         deleteNews(DeleteNews.Params(id)){
             when(it){
@@ -69,7 +61,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun getCurrentPosition(id: Long, currentNews: MutableList<News>): Int {
+        var position = 0
+        for(news in currentNews){
+            if(news.id == id){
+                break
+            }
+            position++
+        }
 
+        return position
+    }
 
     private fun handleLocalNews(localNews: List<News>) {
         if(localNews.isNotEmpty()) {
@@ -95,18 +97,14 @@ class MainViewModel @Inject constructor(
 
     private fun handleRefreshNews(news: List<News>){
         val oldNews = newsLiveData.value?.data ?: mutableListOf()
-        var lastDate = DateUtils.parseDate(oldNews[0].createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0
-
-        val filterNews = news.filter {
-            (DateUtils.parseDate(it.createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0) > lastDate
-        }
+        val filterNews = getFilterNews(news, oldNews)
 
         if(filterNews.isNotEmpty()) {
             saveNews(SaveNews.Params(filterNews)){
                 when(it){
                     is Completable.OnComplete -> {
                         val data = listOf(filterNews, oldNews)
-                        val combined = data.flatMap { it }
+                        val combined = data.flatten()
 
                         newsLiveData.postValue(Resource(ResourceState.SUCCESS, combined, null))
                     }
@@ -116,6 +114,15 @@ class MainViewModel @Inject constructor(
             }
         } else {
             newsLiveData.postValue(Resource(ResourceState.SUCCESS, oldNews, null))
+        }
+    }
+
+    private fun getFilterNews(news: List<News>, oldNews: List<News>): List<News>{
+
+        var lastDate = DateUtils.parseDate(oldNews[0].createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0
+
+        return news.filter {
+            (DateUtils.parseDate(it.createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0) > lastDate
         }
     }
 
