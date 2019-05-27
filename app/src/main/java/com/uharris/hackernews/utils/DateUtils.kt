@@ -10,10 +10,15 @@ object DateUtils {
 
         if (stringDate == null) return null
 
-        val format = SimpleDateFormat(stringFormat)
+        val format = SimpleDateFormat(stringFormat, Locale.getDefault())
+        format.timeZone = TimeZone.getTimeZone("UTC")
         var date: Date? = null
+        var formattedDate: String? = null
         try {
             date = format.parse(stringDate)
+            format.timeZone = TimeZone.getDefault()
+            formattedDate = format.format(date)
+            date = format.parse(formattedDate)
         } catch (e: ParseException) {
             e.printStackTrace()
         }
@@ -22,7 +27,7 @@ object DateUtils {
     }
 
     fun offsetFrom(date: String): String {
-        val dateTime = parseDate(date, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0
+        val dateTime = parseDate(date, "yyyy-MM-dd'T'HH:mm:ss'.000Z'")?.time ?: 0
 
         val monthsBetween = monthsBetween(Date().time, dateTime)
         if (monthsBetween > 0) {

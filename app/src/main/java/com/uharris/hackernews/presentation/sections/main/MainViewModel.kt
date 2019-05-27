@@ -119,10 +119,10 @@ class MainViewModel @Inject constructor(
 
     private fun getFilterNews(news: List<News>, oldNews: List<News>): List<News>{
 
-        var lastDate = DateUtils.parseDate(oldNews[0].createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0
+        var lastDate = DateUtils.parseDate(oldNews[0].createdAt, "yyyy-MM-dd'T'HH:mm:ss'.000Z'")?.time ?: 0
 
         return news.filter {
-            (DateUtils.parseDate(it.createdAt, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")?.time ?: 0) > lastDate
+            (DateUtils.parseDate(it.createdAt, "yyyy-MM-dd'T'HH:mm:ss'.000Z'")?.time ?: 0) > lastDate
         }
     }
 
